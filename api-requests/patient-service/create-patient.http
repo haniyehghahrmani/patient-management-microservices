@@ -1,0 +1,12 @@
+### POST request to create patient
+POST http://localhost:4000/patients
+Content-Type: application/json
+
+{
+  "name": "hani ghahremani billing account",
+  "address": "145 main street",
+  "email": "hani_billing_account@hani.com",
+  "dateOfBirth": "2006-07-11",
+  "registeredDate": "2025-07-07"
+}
+###

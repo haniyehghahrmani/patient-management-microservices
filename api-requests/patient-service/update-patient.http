@@ -1,0 +1,12 @@
+### PUT request to update patient
+PUT http://localhost:4000/patients/223e4567-e89b-12d3-a456-426614174014
+Content-Type: application/json
+
+{
+  "name": "hani ghahremani",
+  "address": "145 main street",
+  "email": "hani@hani.com",
+  "dateOfBirth": "2006-07-11"
+}
+
+###
