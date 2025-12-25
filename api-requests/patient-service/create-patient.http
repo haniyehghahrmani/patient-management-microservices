@@ -3,9 +3,9 @@ POST http://localhost:4000/patients
 Content-Type: application/json
 
 {
-  "name": "hani ghahremani billing accounts",
+  "name": "hani ghahremani kafka02",
   "address": "145 main street",
-  "email": "hani_billing_account123@hani.com",
+  "email": "hani_kafka02@hani.com",
   "dateOfBirth": "2006-07-11",
   "registeredDate": "2025-07-07"
 }
