@@ -14,6 +14,7 @@ Production-style microservices project built with Java and Spring Boot.
 - Billing Service (gRPC Server)
 - gRPC communication implemented
 - Event-driven communication using Kafka (Producer)
+- Analytics Service (Kafka Consumer, Dockerized)
 
 ## Project Status
 🚧 In Progress
