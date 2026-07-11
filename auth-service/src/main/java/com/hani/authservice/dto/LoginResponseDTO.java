@@ -2,13 +2,20 @@ package com.hani.authservice.dto;
 
 public class LoginResponseDTO {
 
-    private final String token;
+    private final String accessToken;
 
-    public LoginResponseDTO(String token) {
-        this.token = token;
+    private final String refreshToken;
+
+    public LoginResponseDTO(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 
-    public String getToken() {
-        return token;
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
     }
 }

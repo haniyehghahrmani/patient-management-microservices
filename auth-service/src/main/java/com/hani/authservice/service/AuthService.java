@@ -1,6 +1,9 @@
 package com.hani.authservice.service;
 
 import com.hani.authservice.dto.LoginRequestDTO;
+import com.hani.authservice.dto.LoginResponseDTO;
+import com.hani.authservice.model.RefreshToken;
+import com.hani.authservice.model.User;
 import com.hani.authservice.util.JwtUtil;
 import io.jsonwebtoken.JwtException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,21 +17,39 @@ public class AuthService {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
 
-    public AuthService(UserService userService, PasswordEncoder passwordEncoderl, JwtUtil jwtUtil) {
+    public AuthService(UserService userService, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, RefreshTokenService refreshTokenService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoderl;
+        this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.refreshTokenService = refreshTokenService;
     }
 
-    public Optional<String> authenticate(LoginRequestDTO loginRequestDTO) {
-        Optional<String> token = userService
-                .findByEmail(loginRequestDTO.getEmail())
-                .filter(u -> passwordEncoder.matches(loginRequestDTO.getPassword(),
-                        u.getPassword()))
-                .map(u -> jwtUtil.generateToken(u.getEmail(), u.getRole()));
+    public Optional<LoginResponseDTO> authenticate(LoginRequestDTO loginRequestDTO) {
 
-        return token;
+        Optional<User> userOptional = userService.findByEmail(loginRequestDTO.getEmail());
+
+        if (userOptional.isEmpty()){
+            return Optional.empty();
+        }
+
+        User user = userOptional.get();
+
+        if (!passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPassword())){
+            return Optional.empty();
+        }
+
+        String accessToken = jwtUtil.generateToken(user.getEmail(), user.getRole());
+
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+
+        return Optional.of(
+                new LoginResponseDTO(
+                        accessToken,
+                        refreshToken.getToken()
+                )
+        );
     }
 
     public boolean validateToken(String token){

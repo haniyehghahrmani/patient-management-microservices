@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.security.SignatureException;
 import java.util.Base64;
 import java.util.Date;
 
@@ -30,7 +29,16 @@ public class JwtUtil {
                 .subject(email)
                 .claim("role", role)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public String generateRefreshToken(String email) {
+        return Jwts.builder()
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
                 .signWith(secretKey)
                 .compact();
     }
@@ -40,6 +48,18 @@ public class JwtUtil {
             Jwts.parser().verifyWith((SecretKey) secretKey)
                     .build()
                     .parseSignedClaims(token);
+        } catch (JwtException e) {
+            throw new JwtException("Invalid JWT");
+        }
+    }
+
+    public String extractEmail(String token) {
+        try {
+            return Jwts.parser().verifyWith((SecretKey) secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .getSubject();
         } catch (JwtException e) {
             throw new JwtException("Invalid JWT");
         }

@@ -21,6 +21,17 @@ public class User {
     @Column(nullable = false)
     private String role;
 
+    public User(UUID id, String email, String password, String role) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
+    public User() {
+
+    }
+
     public UUID getId() {
         return id;
     }

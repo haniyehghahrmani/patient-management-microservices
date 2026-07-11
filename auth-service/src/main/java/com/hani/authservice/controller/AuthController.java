@@ -23,21 +23,20 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
 
-        Optional<String> tokenOptional = authService.authenticate(loginRequestDTO);
+        Optional<LoginResponseDTO> tokenOptional = authService.authenticate(loginRequestDTO);
 
         if (tokenOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        String token = tokenOptional.get();
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        return ResponseEntity.ok(tokenOptional.get());
     }
 
     @Operation(summary = "validate token")
     @GetMapping("/validate")
     public ResponseEntity<Void> validateToken(@RequestHeader("Authorization") String authHeader) {
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")){
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
